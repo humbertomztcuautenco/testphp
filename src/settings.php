@@ -1,8 +1,8 @@
 <?php
 return [
     "conectionData" => [
-        "dns"  => "mysql:host=127.0.0.1;dbname=testphp;charset=utf8",
-        "user" => "testphp",
+        "dns"  => "mysql:host=45.84.204.205;dbname=u219376423_testphp;charset=utf8",
+        "user" => "u219376423_testphp",
         "pass" => "tesT20@@@!!!000-.-",
     ]
 ];
