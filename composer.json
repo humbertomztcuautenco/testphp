@@ -1,0 +1,19 @@
+{
+    "name": "humbertomartinez/testphp",
+    "description": "test php",
+    "autoload": {
+        "psr-4": {
+            "Humbertomartinez\\Testphp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Humberto Martinez Cuautenco",
+            "email": "humbertmtzcuautenco@hotmail.com"
+        }
+    ],
+    "require": {
+        "firebase/php-jwt": "^5.4",
+        "lichtner/fluentpdo": "^2.2"
+    }
+}
