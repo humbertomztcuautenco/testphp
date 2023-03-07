@@ -1,19 +1,13 @@
 {
-    "name": "humbertomartinez/testphp",
-    "description": "test php",
+    "require": {
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.6",
+        "envms/fluentpdo": "^2.2.0",
+        "vlucas/phpdotenv": "^5.5"
+    },
     "autoload": {
         "psr-4": {
-            "Humbertomartinez\\Testphp\\": "src/"
+            "App\\": "src"
         }
-    },
-    "authors": [
-        {
-            "name": "Humberto Martinez Cuautenco",
-            "email": "humbertmtzcuautenco@hotmail.com"
-        }
-    ],
-    "require": {
-        "firebase/php-jwt": "^5.4",
-        "lichtner/fluentpdo": "^2.2"
     }
 }
