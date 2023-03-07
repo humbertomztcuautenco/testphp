@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
 header("Access-Control-Allow-Headers: *");
 header('Content-Type: application/json');
 
-date_default_timezone_set('America/Mexico_City');
+// date_default_timezone_set('America/Mexico_City');
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -19,8 +19,9 @@ $app = AppFactory::create();
 
 require __DIR__ . '/src/loadApp.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+// $dotenv->load();
+
 // uso de use AuthMiddleware;
 use App\Middleware\AuthMiddleware;
 
