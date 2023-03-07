@@ -15,7 +15,9 @@ use Slim\Factory\AppFactory;
 
 use App\Controllers\AuthController;
 
+// Agregar esta línea
 $app = AppFactory::create();
+$app->setBasePath("/");
 
 require __DIR__ . '/src/loadApp.php';
 
