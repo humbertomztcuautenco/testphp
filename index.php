@@ -12,12 +12,20 @@ require __DIR__ . '/vendor/autoload.php';
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+use Slim\Routing\RouteContext;
 
 use App\Controllers\AuthController;
 
 // Agregar esta línea
 $app = AppFactory::create();
-$app->setBasePath("/");
+
+if (PHP_SAPI == 'cli-server') {
+    $url = parse_url($_SERVER['REQUEST_URI']);
+    $file = __DIR__ . $url['path'];
+    if (is_file($file)) {
+        return false;
+    }
+}
 
 require __DIR__ . '/src/loadApp.php';
 
