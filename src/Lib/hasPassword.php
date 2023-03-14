@@ -1,8 +1,8 @@
 <?php
 namespace App\Lib;
 
-class hashPassword{
-    public function hash($password){
+class HashPassword{
+    public static function hash($password){
         $options = [
             'memory_cost' => 2 ** 15, // 32MB de memoria
             'time_cost' => 4, // 4 iteraciones

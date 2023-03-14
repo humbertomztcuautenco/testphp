@@ -6,7 +6,8 @@ $folders = [
     'Models',
     'Middleware',
     'Controllers',
-    'Config'
+    'Config',
+    'Routes'
 ];
 
 foreach($folders as $f)

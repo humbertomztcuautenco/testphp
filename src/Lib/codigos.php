@@ -3,7 +3,6 @@ namespace App\Lib;
 
 class Codigos
 {
-	
 	public static function generar($long)
 	{
 		if ($long==4) {

@@ -1,6 +1,5 @@
 <?php
 namespace App\Models;
-use App\Config\Config;
 
 use PDO;
 
@@ -8,12 +7,11 @@ class MysqlModel {
     public $sqlPDO = null;
     public function __CONSTRUCT(){
         try {
-            $stringDB = Config::getStringsDB();
-            $host = $stringDB['host'];
-            $db = $stringDB['db'];
+            $host = $_ENV['HOST'];
+            $db = $_ENV['DATABASE'];
             $dns = "mysql:host=$host;dbname=$db;charset=utf8";
-            $user = $stringDB['user'];
-            $pass = $stringDB['pass'];
+            $user = $_ENV['USERNAME'];
+            $pass = $_ENV['PASSWORD'];
             
             $pdo = new PDO($dns,$user, $pass);
 
