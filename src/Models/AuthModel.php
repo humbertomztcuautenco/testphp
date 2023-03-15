@@ -4,7 +4,8 @@ namespace App\Models;
 use App\Models\MysqlModel,
     App\Lib\Response,
     App\Lib\HashPassword,
-    App\Lib\Codigos;
+    App\Lib\Codigos,
+    App\Lib\Auth;
 
 class AuthModel {
     private $db = null;
@@ -18,12 +19,15 @@ class AuthModel {
 
     public function validarEmail($parametros){
         $email = $parametros->email;
+        $tipoUser = $parametros->tipoUser;
+
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $this->response->result = null;
             return  $this->response->SetResponse(false,'El correo no es valido use el formato ejemplo@dominio.com.');
         } 
         $validacion = $this->db->from('usuarios')
                                ->where('email',$email)
+                               ->where('tipo_usuario',$tipoUser)
                                ->fetch();
 
         if (!$validacion) {
@@ -34,53 +38,19 @@ class AuthModel {
                 'codigo'            => $codigo,
                 'email'             => $email,
                 'status'            => 'activo',
-                'fechaExpiracion'   => $fechaEx
+                'fechaExpiracion'   => $fechaEx,
+                'tipo_usuario'      => $tipoUser
             ];
             // insertar en base de datos
             $insertCode = $this->db->insertInto('codigosEmailValidacion')
                                    ->values($data)
                                    ->execute();
-            $fecha = date('Y-m-d H:i:s', $fechaEx);
-            // envio de mail
-            $url = "https://api.sendinblue.com/v3/smtp/email";
-
-            $data = array(
-                "sender" => array(
-                    "name" => "Azteca Ferries",
-                    "email" => "cuentas@aircab.com.mx"
-                ),
-                "to" => array(
-                    array(
-                        "email" => "$email",
-                        "name" => ""
-                    )
-                ),
-                "subject" => "Codigo de verificaccion Email Azteca Ferries",
-                "htmlContent" => "<html><head></head><body><p>Hello,</p>Su codigo de verificaccion es: $codigo.</p></body></html>"
-            );
-
-            $payload = json_encode($data);
-
-            $headers = array(
-                "accept: application/json",
-                "api-key: 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",
-                "content-type: application/json"
-            );
-
-            $ch = curl_init($url);
-
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-            $result = curl_exec($ch);
-
-            curl_close($ch);
+            
             // Enviar el correo electrónico usando la función mail() nativa de PHP
+            
             // if (mail($to, $subject, $message, $headers)) {
                         $this->response->result = null;
-                return  $this->response->SetResponse(true,"Se envio un codigo a la cuenta $email con caducidad hasta $fecha.");
+                return  $this->response->SetResponse(true,"Se envio un codigo a la cuenta $email con caducidad de 24 horas.");
             // } else {
             //             $this->response->result = null;
             //     return  $this->response->SetResponse(false,'El correo no se pudo enviar.');
@@ -91,12 +61,56 @@ class AuthModel {
         }
     }
 
-    public function validarCode($code,$email){
-        
+    public function validarCodigo($parametros){
+        // $code,$email,$tipoUser
+        $code = $parametros->codigo;
+        $email = $parametros->email;
+        $tipoUser = $parametros->tipoUser;
+        $fecha = time();
+        // echo $fecha;
+        $getCode = $this->db->from('codigosEmailValidacion')
+                         ->where('codigo',$code)
+                         ->where('status','activo')
+                         ->where('fechaExpiracion >= ?',$fecha)
+                         ->where('email',$email)
+                         ->where('tipo_usuario',$tipoUser)
+                         ->orderBy('idcodigosEmailValidacion DESC')
+                         ->fetch();
+
+        if ($getCode) {
+            // update campo de codigo
+            $this->db->update('codigosEmailValidacion')
+                        ->set(array('status' => 'inactivo'))
+                        ->where('idcodigosEmailValidacion = ?', $getCode['idcodigosEmailValidacion'])
+                        ->execute();
+            // generar token de validacion
+            $tokenReg = Auth::LogReg($getCode);
+                    $this->response->result = $tokenReg;
+            return  $this->response->SetResponse(false,'Codigo encontrado.');
+        } else {
+                    $this->response->result = null;
+            return  $this->response->SetResponse(false,'Codigo no valido.');
+        }
     }
 
-    public function registrarUsuario(){
-        
+    public function registrarUsuario($parametros){
+        // alta en la base de datos
+        var_dump($parametros);
+        // $parametros = get_object_vars($parametros);
+        // $registro = $this->db->insertInto('usuarios',$parametros)
+        //                      ->execute();
+        // var_dump($registro);
+        // alta de carpeta de imagen del user
+        // var_dump($_SERVER['DOCUMENT_ROOT']);
+        // $carpeta = 'img/user/';
+        // $ruta = $_SERVER['DOCUMENT_ROOT'] . '/' . $carpeta;
+
+        // if (!file_exists($ruta)) {
+        //     mkdir($ruta, 0777, true); // crea la carpeta con permisos de lectura y escritura
+        // }
+
+        // chmod($ruta, 0777); // asigna permisos de lectura y escritura a la carpeta
+
     }
 
     public function auth($parametro){

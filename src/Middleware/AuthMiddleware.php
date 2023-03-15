@@ -18,12 +18,17 @@ class AuthMiddleware
         if (preg_match('/Bearer\s(\S+)/', $authorizationHeader, $matches)) {
             $token = $matches[1];
         }
-        $authenticated = false; // aquí se debe verificar la autenticación del usuario
+
+        $authenticated = Auth::validateToken($token); // aquí se debe verificar la autenticación del usuario
 
         if (!$authenticated) {
             // Si el usuario no está autenticado, devuelve una respuesta de error
             $response = new Response();
-            $response->getBody()->write(json_encode(['token'=>$token]));
+            $response->getBody()->write(json_encode([
+                "result"     =>null,
+                "response"   => false,
+                "message"    => "Unauthorized"
+            ]));
             return $response->withStatus(401);
         }
 
