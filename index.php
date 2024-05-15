@@ -32,7 +32,7 @@ require __DIR__ . '/src/loadApp.php';
 $app->get('/', function (Request $request, Response $response) {
     // $dbHost = $_ENV['HOST'];
     $response->withHeader('Content-type','application/json')
-             ->getBody()->write("Slim 4 ");
+             ->getBody()->write("Slim 4 = test");
     return $response;
 });
 

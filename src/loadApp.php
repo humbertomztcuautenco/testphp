@@ -17,4 +17,3 @@ foreach($folders as $f)
         require $filename;
     }
 }
-
